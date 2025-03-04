@@ -1,6 +1,8 @@
 "use client";
 
+import Button from "@mui/material/Button";
+
 export const CreateAccountButton = () => {
   const handleClick = () => {};
-  return <button onClick={handleClick}>Create Account</button>;
+  return <Button onClick={handleClick}>Create Account</Button>;
 };
