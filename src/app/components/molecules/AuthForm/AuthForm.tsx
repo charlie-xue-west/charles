@@ -56,7 +56,10 @@ export const AuthForm = ({ formType }: AuthFormProps) => {
   });
   const { error, isLoading, fetchData } = useFetchData();
 
-  const handleOnsubmit = () => {
+  const handleOnsubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    // need this since submit defaults to GET
+    event.preventDefault();
+
     const { userName, password, email, dateOfBirth } = formData;
     const userData = {
       userName,
@@ -65,7 +68,12 @@ export const AuthForm = ({ formType }: AuthFormProps) => {
       ...(dateOfBirth && { dateOfBirth }),
     };
 
-    fetchData(`http://localhost:3001/auth/${formType}`, "Post", userData);
+    fetchData(
+      `http://localhost:3001/auth/${formType}`,
+      "POST",
+      undefined,
+      userData
+    );
   };
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {

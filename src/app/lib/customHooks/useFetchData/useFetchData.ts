@@ -1,7 +1,5 @@
-import axios, { AxiosError, RawAxiosRequestHeaders } from "axios";
+import axios, { AxiosError, Method, RawAxiosRequestHeaders } from "axios";
 import { useState } from "react";
-
-type RestActionTypes = "GET" | "PUT" | "Post" | "DELETE";
 
 export const useFetchData = () => {
   const [data, setData] = useState(null);
@@ -10,10 +8,8 @@ export const useFetchData = () => {
 
   const fetchData = async (
     url: string,
-    method: RestActionTypes,
-    headers: RawAxiosRequestHeaders = {
-      "Content-Type": "application/json",
-    },
+    method: Method,
+    headers?: RawAxiosRequestHeaders,
     body?: object
   ) => {
     setIsLoading(true);
@@ -23,7 +19,9 @@ export const useFetchData = () => {
       const response = await axios({
         method,
         url,
-        headers,
+        headers: headers || {
+          "Content-Type": "application/json",
+        },
         ...(body && { data: body }),
       });
 
