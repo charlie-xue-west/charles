@@ -40,12 +40,12 @@ export default function RootLayout({
       <body
         className={`h-full ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Box sx={backgroundStyle} className="">
+        <Box sx={backgroundStyle}>
           <AppBar
             sx={appBarStyle}
-            position="sticky"
+            position="absolute"
             color="secondary"
-            className="flex justify-between p-[8px]"
+            className="flex justify-between p-[8px] absolute"
           >
             <HomeButton />
             <SignUpButton />
