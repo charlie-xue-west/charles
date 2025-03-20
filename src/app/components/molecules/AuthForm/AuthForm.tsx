@@ -8,6 +8,7 @@ import {
   TextField,
   Theme,
   ThemeProvider,
+  Typography,
   useTheme,
 } from "@mui/material";
 import { useFetchData } from "../../../lib/customHooks";
@@ -102,10 +103,12 @@ export const AuthForm = ({ formType }: AuthFormProps) => {
   return (
     <Box
       component="form"
-      className="flex flex-col bg-gray-200 p-16 rounded-lg gap-4"
+      className="flex flex-col justify-center items-center bg-gray-200 p-16 rounded-lg gap-4"
       onSubmit={handleOnsubmit}
     >
-      <h2 className="">Welcome Traveler</h2>
+      <Typography variant="h2" color="secondary" fontSize={"2rem"}>
+        Welcome Traveler
+      </Typography>
       <ThemeProvider theme={customTheme(outerTheme)}>
         <TextField
           required

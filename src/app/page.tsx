@@ -1,12 +1,7 @@
 "use client";
 
-import { CreateAccountButton } from "@components";
+import { Box } from "@mui/material";
 
 export default function Home() {
-  return (
-    <>
-      <div className="">Welcome to Charles</div>
-      <CreateAccountButton />
-    </>
-  );
+  return <Box></Box>;
 }
