@@ -11,11 +11,13 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useFetchData } from "../../../lib/customHooks";
 import { useState } from "react";
+
+import { useFetchData } from "@lib";
 
 type AuthFormProps = {
   formType: "signup" | "login";
+  className?: string;
 };
 
 type FormData = {
@@ -50,7 +52,7 @@ const customTheme = (outerTheme: Theme) =>
     },
   });
 
-export const AuthForm = ({ formType }: AuthFormProps) => {
+export const AuthForm = ({ formType, className }: AuthFormProps) => {
   const outerTheme = useTheme();
   const [formData, setFormData] = useState<FormData>({
     userName: "",
@@ -103,7 +105,7 @@ export const AuthForm = ({ formType }: AuthFormProps) => {
   return (
     <Box
       component="form"
-      className="flex flex-col justify-center items-center bg-gray-200 p-16 rounded-lg gap-4"
+      className={`${className} flex flex-col justify-center items-center bg-gray-200 p-16 rounded-lg gap-4`}
       onSubmit={handleOnsubmit}
     >
       <Typography variant="h2" color="secondary" fontSize={"2rem"}>
@@ -138,17 +140,18 @@ export const AuthForm = ({ formType }: AuthFormProps) => {
           onChange={handleOnChange}
         />
 
-        <TextField
-          required
-          name="confirmPassword"
-          type="password"
-          color="secondary"
-          label="Confirm Password"
-          helperText="Passwords must match"
-          error={passwordError}
-          onChange={handleOnChange}
-        />
-
+        {formType === "signup" && (
+          <TextField
+            required
+            name="confirmPassword"
+            type="password"
+            color="secondary"
+            label="Confirm Password"
+            helperText="Passwords must match"
+            error={passwordError}
+            onChange={handleOnChange}
+          />
+        )}
         {formType === "signup" && (
           <TextField
             name="dateOfBirth"
