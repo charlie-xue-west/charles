@@ -1,1 +1,2 @@
-export * from "./create-account-button/CreateAccountButton";
+export * from "./signUpButton/SignUpButton";
+export * from "./homeButton/HomeButton";

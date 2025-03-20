@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { AppBar, Box } from "@mui/material";
+import { HomeButton, SignUpButton } from "@components";
 import "./globals.css";
-import { Box } from "@mui/material";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,12 +30,28 @@ export default function RootLayout({
     height: "100%",
   };
 
+  // using because MUI style take precedent over tailwind
+  const appBarStyle = {
+    flexDirection: "row",
+  };
+
   return (
     <html lang="en" className="h-full">
       <body
         className={`h-full ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Box sx={backgroundStyle}>{children}</Box>
+        <Box sx={backgroundStyle} className="">
+          <AppBar
+            sx={appBarStyle}
+            position="sticky"
+            color="secondary"
+            className="flex justify-between p-[8px]"
+          >
+            <HomeButton />
+            <SignUpButton />
+          </AppBar>
+          {children}
+        </Box>
       </body>
     </html>
   );
