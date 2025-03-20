@@ -20,6 +20,7 @@ type AuthFormProps = {
 type FormData = {
   userName: string;
   password: string;
+  confirmPassword: string;
   email?: string;
   dateOfBirth?: string;
 };
@@ -53,7 +54,9 @@ export const AuthForm = ({ formType }: AuthFormProps) => {
   const [formData, setFormData] = useState<FormData>({
     userName: "",
     password: "",
+    confirmPassword: "",
   });
+  const [passwordError, setPasswordError] = useState(false);
   const { error, isLoading, fetchData } = useFetchData();
 
   const handleOnsubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -61,6 +64,7 @@ export const AuthForm = ({ formType }: AuthFormProps) => {
     event.preventDefault();
 
     const { userName, password, email, dateOfBirth } = formData;
+
     const userData = {
       userName,
       password,
@@ -80,10 +84,18 @@ export const AuthForm = ({ formType }: AuthFormProps) => {
     const { name, value } = event.target;
 
     setFormData((prev) => {
-      return {
+      const updatedForm = {
         ...prev,
         [name]: value,
       };
+
+      if (updatedForm.password !== updatedForm.confirmPassword) {
+        setPasswordError(true);
+      } else {
+        setPasswordError(false);
+      }
+
+      return updatedForm;
     });
   };
 
@@ -115,10 +127,22 @@ export const AuthForm = ({ formType }: AuthFormProps) => {
         )}
         <TextField
           required
+          type="password"
           name="password"
           color="secondary"
           label="Password"
-          helperText="required"
+          error={passwordError}
+          onChange={handleOnChange}
+        />
+
+        <TextField
+          required
+          name="confirmPassword"
+          type="password"
+          color="secondary"
+          label="Confirm Password"
+          helperText="Passwords must match"
+          error={passwordError}
           onChange={handleOnChange}
         />
 
@@ -127,6 +151,7 @@ export const AuthForm = ({ formType }: AuthFormProps) => {
             name="dateOfBirth"
             color="secondary"
             label="Date of Birth"
+            helperText="MM/DD/YYYY"
             onChange={handleOnChange}
           />
         )}
