@@ -7,13 +7,15 @@ export const SiteHeader = () => {
     flexDirection: "row",
   };
 
-  <AppBar
-    sx={appBarStyle}
-    position="absolute"
-    color="secondary"
-    className="flex justify-between p-[8px] absolute"
-  >
-    <HomeButton />
-    <LogInButton />
-  </AppBar>;
+  return (
+    <AppBar
+      sx={appBarStyle}
+      position="absolute"
+      color="secondary"
+      className="flex justify-between p-[8px] absolute"
+    >
+      <HomeButton />
+      <LogInButton />
+    </AppBar>
+  );
 };
