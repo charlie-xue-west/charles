@@ -92,9 +92,10 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
         [name]: value,
       };
 
-      if (updatedForm.password !== updatedForm.confirmPassword) {
-        setPasswordError(true);
-      } else {
+      if (formType === "signup") {
+        if (updatedForm.password !== updatedForm.confirmPassword) {
+          setPasswordError(true);
+        }
         setPasswordError(false);
       }
 
