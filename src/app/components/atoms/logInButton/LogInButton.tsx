@@ -3,10 +3,10 @@
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 
-export const SignUpButton = () => {
+export const LogInButton = () => {
   const router = useRouter();
-  const handleSignUp = () => {
-    router.push("/signup");
+  const handleLogIn = () => {
+    router.push("/login");
   };
 
   return (
@@ -15,9 +15,9 @@ export const SignUpButton = () => {
       color="inherit"
       size="small"
       className="max-w-3xs"
-      onClick={handleSignUp}
+      onClick={handleLogIn}
     >
-      Sign Up
+      Log In
     </Button>
   );
 };
