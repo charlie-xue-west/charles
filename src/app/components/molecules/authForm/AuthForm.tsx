@@ -16,7 +16,6 @@ import { useState } from "react";
 
 import { fetchData } from "@lib";
 import { useRouter } from "next/navigation";
-import { SignUpButton } from "../../atoms";
 import Link from "next/link";
 
 type AuthFormProps = {
