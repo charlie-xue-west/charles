@@ -1,8 +1,14 @@
 import axios, { AxiosError, Method, RawAxiosRequestHeaders } from "axios";
 import { useState } from "react";
 
+type ResponseData = {
+  message?: string;
+  error?: string;
+  statusCode?: number;
+};
+
 export const useFetchData = () => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<ResponseData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
