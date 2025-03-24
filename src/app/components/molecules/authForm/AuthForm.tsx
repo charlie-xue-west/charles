@@ -130,7 +130,6 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             name="userName"
             color="secondary"
             label="User Name"
-            helperText="required"
             error={!!error}
             onChange={handleOnChange}
           />
@@ -140,7 +139,6 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
               name="email"
               color="secondary"
               label="Email"
-              helperText="required"
               onChange={handleOnChange}
             />
           )}
