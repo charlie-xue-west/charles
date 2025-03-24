@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Alert,
   Box,
   Button,
   createTheme,
@@ -13,7 +14,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-import { useFetchData } from "@lib";
+import { fetchData } from "@lib";
+import { useRouter } from "next/navigation";
 
 type AuthFormProps = {
   formType: "signup" | "login";
@@ -60,9 +62,10 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     confirmPassword: "",
   });
   const [passwordError, setPasswordError] = useState(false);
-  const { error, isLoading, fetchData } = useFetchData();
+  const [error, setError] = useState("");
+  const router = useRouter();
 
-  const handleOnsubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleOnsubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // need this since submit defaults to GET
     event.preventDefault();
 
@@ -75,12 +78,20 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
       ...(dateOfBirth && { dateOfBirth }),
     };
 
-    fetchData(
+    const response = await fetchData(
       `http://localhost:3001/auth/${formType}`,
       "POST",
       undefined,
       userData
     );
+
+    if (response.error) {
+      setError(response.message);
+    }
+
+    if (!response.error) {
+      router.push("/hub");
+    }
   };
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,67 +112,72 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
 
       return updatedForm;
     });
+
+    setError("");
   };
 
   return (
     <Box
       component="form"
-      className={`${className} flex flex-col justify-center items-center bg-gray-200 p-16 rounded-lg gap-4`}
+      className={`${className} flex flex-col justify-between items-center  bg-gray-200 p-16 rounded-lg`}
       onSubmit={handleOnsubmit}
     >
-      <Typography variant="h2" color="secondary" fontSize={"2rem"}>
-        Welcome Traveler
-      </Typography>
       <ThemeProvider theme={customTheme(outerTheme)}>
-        <TextField
-          required
-          name="userName"
-          color="secondary"
-          label="User Name"
-          helperText="required"
-          onChange={handleOnChange}
-        />
-        {formType === "signup" && (
+        <Box className={`flex flex-col justify-center items-center gap-4`}>
+          <Typography variant="h2" color="secondary" fontSize={"2rem"}>
+            Welcome Traveler
+          </Typography>
           <TextField
             required
-            name="email"
+            name="userName"
             color="secondary"
-            label="Email"
+            label="User Name"
             helperText="required"
             onChange={handleOnChange}
           />
-        )}
-        <TextField
-          required
-          type="password"
-          name="password"
-          color="secondary"
-          label="Password"
-          error={passwordError}
-          onChange={handleOnChange}
-        />
-
-        {formType === "signup" && (
+          {formType === "signup" && (
+            <TextField
+              required
+              name="email"
+              color="secondary"
+              label="Email"
+              helperText="required"
+              onChange={handleOnChange}
+            />
+          )}
           <TextField
             required
-            name="confirmPassword"
             type="password"
+            name="password"
             color="secondary"
-            label="Confirm Password"
-            helperText="Passwords must match"
+            label="Password"
             error={passwordError}
             onChange={handleOnChange}
           />
-        )}
-        {formType === "signup" && (
-          <TextField
-            name="dateOfBirth"
-            color="secondary"
-            label="Date of Birth"
-            helperText="MM/DD/YYYY"
-            onChange={handleOnChange}
-          />
-        )}
+
+          {formType === "signup" && (
+            <TextField
+              required
+              name="confirmPassword"
+              type="password"
+              color="secondary"
+              label="Confirm Password"
+              helperText="Passwords must match"
+              error={passwordError}
+              onChange={handleOnChange}
+            />
+          )}
+          {formType === "signup" && (
+            <TextField
+              name="dateOfBirth"
+              color="secondary"
+              label="Date of Birth"
+              helperText="MM/DD/YYYY"
+              onChange={handleOnChange}
+            />
+          )}
+        </Box>
+        {error && <Alert severity="error">{error}</Alert>}
         <Button type="submit" variant="contained" color="secondary">
           {formType === "signup" ? "Sign Up" : "Log In"}
         </Button>
