@@ -61,7 +61,6 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     password: "",
     confirmPassword: "",
   });
-  const [passwordError, setPasswordError] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
 
@@ -105,9 +104,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
 
       if (formType === "signup") {
         if (updatedForm.password !== updatedForm.confirmPassword) {
-          setPasswordError(true);
+          setError("Passwords must match");
         }
-        setPasswordError(false);
       }
 
       return updatedForm;
@@ -133,6 +131,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             color="secondary"
             label="User Name"
             helperText="required"
+            error={!!error}
             onChange={handleOnChange}
           />
           {formType === "signup" && (
@@ -151,7 +150,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             name="password"
             color="secondary"
             label="Password"
-            error={passwordError}
+            error={!!error}
             onChange={handleOnChange}
           />
 
@@ -163,7 +162,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
               color="secondary"
               label="Confirm Password"
               helperText="Passwords must match"
-              error={passwordError}
+              error={!!error}
               onChange={handleOnChange}
             />
           )}
