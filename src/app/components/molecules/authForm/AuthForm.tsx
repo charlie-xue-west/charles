@@ -16,6 +16,8 @@ import { useState } from "react";
 
 import { fetchData } from "@lib";
 import { useRouter } from "next/navigation";
+import { SignUpButton } from "../../atoms";
+import Link from "next/link";
 
 type AuthFormProps = {
   formType: "signup" | "login";
@@ -117,7 +119,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
   return (
     <Box
       component="form"
-      className={`${className} flex flex-col justify-between items-center  bg-gray-200 p-16 rounded-lg`}
+      className={`${className} flex flex-col justify-between items-center bg-gray-200 p-16 rounded-lg`}
       onSubmit={handleOnsubmit}
     >
       <ThemeProvider theme={customTheme(outerTheme)}>
@@ -174,7 +176,22 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             />
           )}
         </Box>
+
         {error && <Alert severity="error">{error}</Alert>}
+
+        {formType === "login" && (
+          <Box className="flex gap-2">
+            <Typography variant="body1" color="secondary">
+              Newly on the road?{" "}
+            </Typography>
+            <Typography variant="body1" color="primary">
+              <Link color="primary" href="/signup">
+                Sign Up
+              </Link>
+            </Typography>
+          </Box>
+        )}
+
         <Button type="submit" variant="contained" color="secondary">
           {formType === "signup" ? "Sign Up" : "Log In"}
         </Button>
