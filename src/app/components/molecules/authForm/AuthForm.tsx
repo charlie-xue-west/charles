@@ -31,6 +31,11 @@ type FormData = {
   dateOfBirth?: string;
 };
 
+type FormError = {
+  type: "password mismatch" | "submission";
+  message: string;
+};
+
 const customTheme = (outerTheme: Theme) =>
   createTheme({
     palette: {
@@ -62,7 +67,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     password: "",
     confirmPassword: "",
   });
-  const [error, setError] = useState("");
+  const [error, setError] = useState<FormError | null>(null);
   const router = useRouter();
 
   const handleOnsubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -86,7 +91,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     );
 
     if (response.error) {
-      setError(response.message);
+      setError({ type: "submission", message: response.message });
     }
 
     if (!response.error) {
@@ -105,14 +110,17 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
 
       if (formType === "signup") {
         if (updatedForm.password !== updatedForm.confirmPassword) {
-          setError("Passwords must match");
+          setError({
+            type: "password mismatch",
+            message: "Passwords must match",
+          });
         }
       }
 
       return updatedForm;
     });
 
-    setError("");
+    setError(null);
   };
 
   return (
@@ -131,7 +139,6 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             name="userName"
             color="secondary"
             label="User Name"
-            error={!!error}
             onChange={handleOnChange}
           />
           {formType === "signup" && (
@@ -149,7 +156,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             name="password"
             color="secondary"
             label="Password"
-            error={!!error}
+            error={error?.message === "password mismatch"}
             onChange={handleOnChange}
           />
 
@@ -161,7 +168,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
               color="secondary"
               label="Confirm Password"
               helperText="Passwords must match"
-              error={!!error}
+              error={error?.message === "password mismatch"}
               onChange={handleOnChange}
             />
           )}
@@ -176,12 +183,16 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           )}
         </Box>
 
-        {error && <Alert severity="error">{error}</Alert>}
+        {error && (
+          <Alert tabIndex={-1} severity="error" sx={{ fontSize: "12px" }}>
+            {error.message}
+          </Alert>
+        )}
 
         {formType === "login" && (
           <Box className="flex gap-2">
             <Typography variant="body1" color="secondary">
-              Newly on the road?{" "}
+              Newly on the road?
             </Typography>
             <Typography variant="body1" color="primary">
               <Link color="primary" href="/signup">
