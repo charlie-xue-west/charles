@@ -18,7 +18,7 @@ import { fetchData } from "@lib";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthFormProps, FormData, FormErrors } from "./types";
-import { formatErrors } from "./utils";
+import { categorizeErrors, joinErrors } from "./utils";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -76,9 +76,9 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     );
 
     if (response.error) {
-      const formattedErrors = formatErrors(response.message);
+      const categorizedErrors = categorizeErrors(response.message);
 
-      setSubError(formattedErrors);
+      setSubError(categorizedErrors);
     }
 
     if (!response.error) {
@@ -114,7 +114,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
   return (
     <Box
       component="form"
-      className={`${className} flex flex-col justify-between items-center bg-gray-200 p-16 rounded-lg`}
+      className={`${className} flex flex-col justify-between items-center bg-gray-200 p-16 rounded-lg gap-4`}
       onSubmit={handleOnsubmit}
     >
       <ThemeProvider theme={customTheme(outerTheme)}>
@@ -123,35 +123,55 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             Welcome Traveler
           </Typography>
           <TextField
+            className="w-full"
             required
             name="userName"
             color="secondary"
             label="User Name"
             error={!!subError?.userName}
+            helperText={subError?.userName?.messages}
             onChange={handleOnChange}
           />
           {formType === "signup" && (
-            <TextField
-              required
-              name="email"
-              color="secondary"
-              label="Email"
-              error={!!subError?.email}
-              onChange={handleOnChange}
-            />
+            <>
+              <TextField
+                className="w-full"
+                required
+                name="email"
+                color="secondary"
+                label="Email"
+                error={!!subError?.email}
+                helperText={subError?.email?.messages}
+                onChange={handleOnChange}
+              />
+
+              <TextField
+                className="w-full"
+                name="dateOfBirth"
+                color="secondary"
+                label="Date of Birth (MM/DD/YYYY)"
+                helperText={subError?.dob?.messages}
+                error={!!subError?.dob}
+                onChange={handleOnChange}
+              />
+            </>
           )}
+
           <TextField
+            className="w-full"
             required
             type="password"
             name="password"
             color="secondary"
             label="Password"
             error={!!subError?.password}
+            helperText={<>{joinErrors(subError?.password?.messages || [])}</>}
             onChange={handleOnChange}
           />
 
           {formType === "signup" && (
             <TextField
+              className="w-full"
               required
               name="confirmPassword"
               type="password"
@@ -159,16 +179,6 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
               label="Confirm Password"
               helperText="Passwords must match"
               error={!!subError?.password}
-              onChange={handleOnChange}
-            />
-          )}
-          {formType === "signup" && (
-            <TextField
-              name="dateOfBirth"
-              color="secondary"
-              label="Date of Birth"
-              helperText="MM/DD/YYYY"
-              error={!!subError?.dob}
               onChange={handleOnChange}
             />
           )}

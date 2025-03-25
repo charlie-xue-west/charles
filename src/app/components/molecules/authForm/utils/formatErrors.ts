@@ -1,6 +1,6 @@
 import { FormErrors } from "../types";
 
-export const formatErrors = (errors: string[] | string) => {
+export const categorizeErrors = (errors: string[] | string) => {
   if (!Array.isArray(errors)) {
     errors = [errors];
   }
@@ -32,4 +32,8 @@ export const formatErrors = (errors: string[] | string) => {
   }
 
   return formErrors;
+};
+
+export const joinErrors = (errors: string[]) => {
+  return errors.length > 1 ? errors.join(" ") : errors[0];
 };
