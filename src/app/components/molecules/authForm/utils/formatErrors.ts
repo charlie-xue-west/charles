@@ -1,6 +1,6 @@
 import { FormErrors } from "../types";
 
-export const formatError = (errors: string[] | string) => {
+export const formatErrors = (errors: string[] | string) => {
   if (!Array.isArray(errors)) {
     errors = [errors];
   }
@@ -19,16 +19,13 @@ export const formatError = (errors: string[] | string) => {
     // TypeScript doesn't enforce type safety on default values (|| "test")
     const errorType = errorMap[error] ? errorMap[error] : "unknown";
 
-    if (errorType) {
-      if (!formErrors[errorType]) {
-        formErrors[errorType] = { messages: [] };
-      }
-
-      formErrors[errorType].messages = formErrors[errorType].messages
-        ? [...formErrors[errorType].messages, error]
-        : [error];
-    } else {
+    if (!formErrors[errorType]) {
+      formErrors[errorType] = { messages: [] };
     }
+
+    formErrors[errorType].messages = formErrors[errorType].messages
+      ? [...formErrors[errorType].messages, error]
+      : [error];
   }
 
   return formErrors;

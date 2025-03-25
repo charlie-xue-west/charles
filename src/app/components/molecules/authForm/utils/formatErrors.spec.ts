@@ -1,9 +1,9 @@
-import { formatError } from "./formatErrors";
+import { formatErrors } from "./formatErrors";
 
 describe("formatErrors", () => {
   it("should return formatted errors from an array error strings", () => {
     expect(
-      formatError([
+      formatErrors([
         "Password must contain uppercase, lowercase, number, and special character.",
         "Password must be at least 8 characters long.",
         "email must be an email",
@@ -21,7 +21,7 @@ describe("formatErrors", () => {
 
   it("should return formatted error from a single error string", () => {
     expect(
-      formatError(
+      formatErrors(
         "Password must contain uppercase, lowercase, number, and special character."
       )
     ).toEqual({
@@ -32,7 +32,7 @@ describe("formatErrors", () => {
       },
     });
 
-    expect(formatError("email must be an email")).toEqual({
+    expect(formatErrors("email must be an email")).toEqual({
       email: {
         messages: ["email must be an email"],
       },
