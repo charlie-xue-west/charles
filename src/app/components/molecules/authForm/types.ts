@@ -12,7 +12,7 @@ export type FormData = {
 };
 
 export type FormErrorContent = {
-  message?: string[];
+  messages?: string[];
 };
 
 export type FormErrors = {
