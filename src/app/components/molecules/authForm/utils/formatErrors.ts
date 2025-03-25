@@ -1,13 +1,13 @@
-import { FormErrors } from "../types";
+import { SubmissionErrors } from "../types";
 
 export const categorizeErrors = (errors: string[] | string) => {
   if (!Array.isArray(errors)) {
     errors = [errors];
   }
 
-  const formErrors: FormErrors = {};
+  const formErrors: SubmissionErrors = {};
 
-  const errorMap: Record<string, keyof FormErrors> = {
+  const errorMap: Record<string, keyof SubmissionErrors> = {
     "Duplicate User Name.": "userName",
     "Duplicate email.": "email",
     "Password must be at least 8 characters long.": "password",
