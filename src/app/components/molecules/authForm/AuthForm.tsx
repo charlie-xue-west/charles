@@ -24,11 +24,13 @@ import Link from "next/link";
 import {
   AuthFormProps,
   FormData,
+  PasswordCheckTypes,
   SubmissionErrors,
   ValidateErrors,
 } from "./types";
 import { categorizeErrors, joinErrors } from "./utils";
 import { CheckCircle } from "@mui/icons-material";
+import { checkPassWord } from "./utils/checkers";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -63,6 +65,13 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
   });
   const [subError, setSubError] = useState<SubmissionErrors | null>(null);
   const [validError, setValidError] = useState<ValidateErrors | null>(null);
+  const [passwordChecks, setPasswordChecks] = useState<PasswordCheckTypes>({
+    "One lowercase character": false,
+    "One uppercase character": false,
+    "One number": false,
+    "One special character": false,
+    "8 characters minimum": false,
+  });
   const router = useRouter();
 
   const handleOnsubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -111,6 +120,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             password: "Passwords must match",
           });
         }
+
+        setPasswordChecks(checkPassWord(updatedForm.password));
       }
 
       return updatedForm;
@@ -119,12 +130,17 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     setValidError(null);
   };
 
-  const createList = (listItems: string[], Icon: React.ElementType) => {
+  const createList = (
+    listItems: (keyof PasswordCheckTypes)[],
+    Icon: React.ElementType,
+    passwordChecks: PasswordCheckTypes
+  ) => {
     return listItems.map((item) => {
+      const isChecked = passwordChecks[item];
       return (
         <ListItem key={item}>
           <ListItemIcon>
-            <Icon />
+            <Icon color={isChecked ? "success" : "disabled"} />
           </ListItemIcon>
           <ListItemText>{item}</ListItemText>
         </ListItem>
@@ -133,11 +149,11 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
   };
 
   const passwordConditions = [
-    "One lowercase character",
-    "One uppercase character",
-    "One number",
-    "One special character",
-    "8 characters minimum",
+    "One lowercase character" as const,
+    "One uppercase character" as const,
+    "One number" as const,
+    "One special character" as const,
+    "8 characters minimum" as const,
   ];
 
   return (
@@ -212,7 +228,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
                 onChange={handleOnChange}
               />
               <List sx={{ color: "black" }} dense={true}>
-                {createList(passwordConditions, CheckCircle)}
+                {createList(passwordConditions, CheckCircle, passwordChecks)}
               </List>
             </>
           )}

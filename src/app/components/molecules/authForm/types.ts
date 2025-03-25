@@ -29,3 +29,11 @@ export type ValidateErrors = {
   password?: string;
   dob?: string;
 };
+
+export type PasswordCheckTypes = {
+  "One lowercase character": boolean;
+  "One uppercase character": boolean;
+  "One number": boolean;
+  "One special character": boolean;
+  "8 characters minimum": boolean;
+};
