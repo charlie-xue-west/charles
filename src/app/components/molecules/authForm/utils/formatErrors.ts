@@ -8,11 +8,14 @@ export const formatErrors = (errors: string[] | string) => {
   const formErrors: FormErrors = {};
 
   const errorMap: Record<string, keyof FormErrors> = {
+    "Duplicate User Name.": "userName",
+    "Duplicate email.": "email",
     "Password must be at least 8 characters long.": "password",
     "Password must not exceed 64 characters.": "password",
     "Password must contain uppercase, lowercase, number, and special character.":
       "password",
-    "email must be an email": "email",
+    "Invalid email format.": "email",
+    "Invalid date format.": "dob",
   };
 
   for (const error of errors) {

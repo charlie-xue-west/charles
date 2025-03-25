@@ -14,10 +14,11 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-import { fetchData, formatError } from "@lib";
+import { fetchData } from "@lib";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AuthFormProps, FormData, FormErrors } from "./types";
+import { formatErrors } from "./utils";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -50,7 +51,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     password: "",
     confirmPassword: "",
   });
-  const [error, setError] = useState<FormErrors | null>(null);
+  const [subError, setSubError] = useState<FormErrors | null>(null);
+  const [validError, setValidError] = useState(null);
   const router = useRouter();
 
   const handleOnsubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -74,8 +76,9 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     );
 
     if (response.error) {
-      if (response.error)
-        setError({ type: "submission", message: response.message });
+      const formattedErrors = formatErrors(response.message);
+
+      setSubError(formattedErrors);
     }
 
     if (!response.error) {
@@ -94,9 +97,10 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
 
       if (formType === "signup") {
         if (updatedForm.password !== updatedForm.confirmPassword) {
-          setError({
-            type: "password mismatch",
-            message: "Passwords must match",
+          setValidError({
+            password: {
+              messages: ["Passwords must match"],
+            },
           });
         }
       }
@@ -104,7 +108,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
       return updatedForm;
     });
 
-    setError(null);
+    setValidError(null);
   };
 
   return (
@@ -123,6 +127,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             name="userName"
             color="secondary"
             label="User Name"
+            error={!!subError?.userName}
             onChange={handleOnChange}
           />
           {formType === "signup" && (
@@ -131,6 +136,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
               name="email"
               color="secondary"
               label="Email"
+              error={!!subError?.email}
               onChange={handleOnChange}
             />
           )}
@@ -140,7 +146,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             name="password"
             color="secondary"
             label="Password"
-            error={!!error?.password}
+            error={!!subError?.password}
             onChange={handleOnChange}
           />
 
@@ -152,7 +158,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
               color="secondary"
               label="Confirm Password"
               helperText="Passwords must match"
-              error={!!error?.password}
+              error={!!subError?.password}
               onChange={handleOnChange}
             />
           )}
@@ -162,12 +168,13 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
               color="secondary"
               label="Date of Birth"
               helperText="MM/DD/YYYY"
+              error={!!subError?.dob}
               onChange={handleOnChange}
             />
           )}
         </Box>
 
-        {error && error.type === "submission" && (
+        {/* {error && error.type === "submission" && (
           <Alert
             tabIndex={-1}
             severity="error"
@@ -176,7 +183,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           >
             {formatError(error.message)}
           </Alert>
-        )}
+        )} */}
 
         {formType === "login" && (
           <Box className="flex gap-2">
