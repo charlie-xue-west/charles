@@ -14,27 +14,10 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 
-import { fetchData } from "@lib";
+import { fetchData, formatError } from "@lib";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-type AuthFormProps = {
-  formType: "signup" | "login";
-  className?: string;
-};
-
-type FormData = {
-  userName: string;
-  password: string;
-  confirmPassword: string;
-  email?: string;
-  dateOfBirth?: string;
-};
-
-type FormError = {
-  type: "password mismatch" | "submission";
-  message: string;
-};
+import { AuthFormProps, FormData, FormErrors } from "./types";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -67,7 +50,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     password: "",
     confirmPassword: "",
   });
-  const [error, setError] = useState<FormError | null>(null);
+  const [error, setError] = useState<FormErrors | null>(null);
   const router = useRouter();
 
   const handleOnsubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -91,7 +74,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     );
 
     if (response.error) {
-      setError({ type: "submission", message: response.message });
+      if (response.error)
+        setError({ type: "submission", message: response.message });
     }
 
     if (!response.error) {
@@ -156,7 +140,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             name="password"
             color="secondary"
             label="Password"
-            error={error?.message === "password mismatch"}
+            error={!!error?.password}
             onChange={handleOnChange}
           />
 
@@ -168,7 +152,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
               color="secondary"
               label="Confirm Password"
               helperText="Passwords must match"
-              error={error?.message === "password mismatch"}
+              error={!!error?.password}
               onChange={handleOnChange}
             />
           )}
@@ -183,9 +167,14 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           )}
         </Box>
 
-        {error && (
-          <Alert tabIndex={-1} severity="error" sx={{ fontSize: "12px" }}>
-            {error.message}
+        {error && error.type === "submission" && (
+          <Alert
+            tabIndex={-1}
+            severity="error"
+            icon={false}
+            sx={{ fontSize: "10px", padding: "0px 8px" }}
+          >
+            {formatError(error.message)}
           </Alert>
         )}
 
