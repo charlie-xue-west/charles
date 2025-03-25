@@ -1,6 +1,10 @@
 import { FormErrors } from "../types";
 
-export const formatError = (errors: string[]) => {
+export const formatError = (errors: string[] | string) => {
+  if (!Array.isArray(errors)) {
+    errors = [errors];
+  }
+
   const formErrors: FormErrors = {};
 
   const errorMap: Record<string, keyof FormErrors> = {
