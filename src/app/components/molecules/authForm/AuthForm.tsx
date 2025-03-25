@@ -5,6 +5,10 @@ import {
   Box,
   Button,
   createTheme,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   outlinedInputClasses,
   TextField,
   Theme,
@@ -17,8 +21,14 @@ import { useState } from "react";
 import { fetchData } from "@lib";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AuthFormProps, FormData, FormErrors } from "./types";
+import {
+  AuthFormProps,
+  FormData,
+  SubmissionErrors,
+  ValidateErrors,
+} from "./types";
 import { categorizeErrors, joinErrors } from "./utils";
+import { CheckCircle } from "@mui/icons-material";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -51,8 +61,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     password: "",
     confirmPassword: "",
   });
-  const [subError, setSubError] = useState<FormErrors | null>(null);
-  const [validError, setValidError] = useState(null);
+  const [subError, setSubError] = useState<SubmissionErrors | null>(null);
+  const [validError, setValidError] = useState<ValidateErrors | null>(null);
   const router = useRouter();
 
   const handleOnsubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -98,9 +108,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
       if (formType === "signup") {
         if (updatedForm.password !== updatedForm.confirmPassword) {
           setValidError({
-            password: {
-              messages: ["Passwords must match"],
-            },
+            password: "Passwords must match",
           });
         }
       }
@@ -110,6 +118,27 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
 
     setValidError(null);
   };
+
+  const createList = (listItems: string[], Icon: React.ElementType) => {
+    return listItems.map((item) => {
+      return (
+        <ListItem key={item}>
+          <ListItemIcon>
+            <Icon />
+          </ListItemIcon>
+          <ListItemText>{item}</ListItemText>
+        </ListItem>
+      );
+    });
+  };
+
+  const passwordConditions = [
+    "One lowercase character",
+    "One uppercase character",
+    "One number",
+    "One special character",
+    "8 characters minimum",
+  ];
 
   return (
     <Box
@@ -164,23 +193,28 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             name="password"
             color="secondary"
             label="Password"
-            error={!!subError?.password}
+            error={!!validError?.password || !!subError?.password}
             helperText={joinErrors(subError?.password?.messages || [])}
             onChange={handleOnChange}
           />
 
           {formType === "signup" && (
-            <TextField
-              className="w-full"
-              required
-              name="confirmPassword"
-              type="password"
-              color="secondary"
-              label="Confirm Password"
-              helperText="Passwords must match"
-              error={!!subError?.password}
-              onChange={handleOnChange}
-            />
+            <>
+              <TextField
+                className="w-full"
+                required
+                name="confirmPassword"
+                type="password"
+                color="secondary"
+                label="Confirm Password"
+                helperText={validError?.password}
+                error={!!validError?.password || !!subError?.password}
+                onChange={handleOnChange}
+              />
+              <List sx={{ color: "black" }} dense={true}>
+                {createList(passwordConditions, CheckCircle)}
+              </List>
+            </>
           )}
         </Box>
 

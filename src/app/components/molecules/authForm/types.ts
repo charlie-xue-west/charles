@@ -11,14 +11,21 @@ export type FormData = {
   dateOfBirth?: string;
 };
 
-export type FormErrorContent = {
+export type SubErrorContent = {
   messages?: string[];
 };
 
-export type FormErrors = {
-  userName?: FormErrorContent;
-  email?: FormErrorContent;
-  password?: FormErrorContent;
-  dob?: FormErrorContent;
-  unknown?: FormErrorContent;
+export type SubmissionErrors = {
+  userName?: SubErrorContent;
+  email?: SubErrorContent;
+  password?: SubErrorContent;
+  dob?: SubErrorContent;
+  unknown?: SubErrorContent;
+};
+
+export type ValidateErrors = {
+  userName?: string;
+  email?: string;
+  password?: string;
+  dob?: string;
 };
