@@ -165,7 +165,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             color="secondary"
             label="Password"
             error={!!subError?.password}
-            helperText={<>{joinErrors(subError?.password?.messages || [])}</>}
+            helperText={joinErrors(subError?.password?.messages || [])}
             onChange={handleOnChange}
           />
 
@@ -184,16 +184,11 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           )}
         </Box>
 
-        {/* {error && error.type === "submission" && (
-          <Alert
-            tabIndex={-1}
-            severity="error"
-            icon={false}
-            sx={{ fontSize: "10px", padding: "0px 8px" }}
-          >
-            {formatError(error.message)}
+        {subError?.unknown?.messages && (
+          <Alert tabIndex={-1} severity="error" icon={false}>
+            {joinErrors(subError.unknown.messages)}
           </Alert>
-        )} */}
+        )}
 
         {formType === "login" && (
           <Box className="flex gap-2">
