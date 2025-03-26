@@ -29,7 +29,12 @@ import {
   SubmissionErrors,
   ValidateErrors,
 } from "./types";
-import { categorizeErrors, joinErrors, checkPassWord } from "./utils";
+import {
+  categorizeErrors,
+  joinErrors,
+  checkPassWord,
+  checkEmail,
+} from "./utils";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -117,6 +122,14 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
         setPasswordStatus(
           checkPassWord(updatedForm.password, updatedForm.confirmPassword)
         );
+
+        if (updatedForm.email) {
+          setValidError({
+            email: checkEmail(updatedForm.email)
+              ? ""
+              : "Email must be in correct the format: example@org.com",
+          });
+        }
       }
 
       return updatedForm;
@@ -161,7 +174,9 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
       onSubmit={handleOnsubmit}
     >
       <ThemeProvider theme={customTheme(outerTheme)}>
-        <Box className={`flex flex-col justify-center items-center gap-4`}>
+        <Box
+          className={`flex w-full flex-col justify-center items-center gap-4`}
+        >
           <Typography variant="h2" color="secondary" fontSize={"2rem"}>
             Welcome Traveler
           </Typography>
@@ -180,19 +195,20 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
               <TextField
                 className="w-full"
                 required
+                type="email"
                 name="email"
                 color="secondary"
                 label="Email"
-                error={!!subError?.email}
-                helperText={subError?.email?.messages}
+                error={!!validError?.email || !!subError?.email}
+                helperText={validError?.email || subError?.email?.messages}
                 onChange={handleOnChange}
               />
 
               <TextField
+                type="date"
                 className="w-full"
                 name="dateOfBirth"
                 color="secondary"
-                label="Date of Birth (MM/DD/YYYY)"
                 helperText={subError?.dob?.messages}
                 error={!!subError?.dob}
                 onChange={handleOnChange}
