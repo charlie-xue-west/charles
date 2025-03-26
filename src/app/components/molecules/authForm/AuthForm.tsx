@@ -25,15 +25,16 @@ import { fetchData } from "@lib";
 import {
   AuthFormProps,
   FormData,
-  PasswordCheckTypes,
+  PasswordStatusTypes,
   SubmissionErrors,
   ValidateErrors,
 } from "./types";
 import {
   categorizeErrors,
   joinErrors,
-  checkPassWord,
-  checkEmail,
+  validateForm,
+  hasValue,
+  isEmpty,
 } from "./utils";
 
 const customTheme = (outerTheme: Theme) =>
@@ -66,11 +67,10 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
   const [formData, setFormData] = useState<FormData>({
     userName: "",
     password: "",
-    confirmPassword: "",
   });
   const [subError, setSubError] = useState<SubmissionErrors | null>(null);
-  const [validError, setValidError] = useState<ValidateErrors | null>(null);
-  const [passwordStatus, setPasswordStatus] = useState<PasswordCheckTypes>({
+  const [validError, setValidError] = useState<ValidateErrors>({});
+  const [passwordStatus, setPasswordStatus] = useState<PasswordStatusTypes>({
     "One lowercase character": false,
     "One uppercase character": false,
     "One number": false,
@@ -118,37 +118,26 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
         [name]: value,
       };
 
-      if (formType === "signup") {
-        setPasswordStatus(
-          checkPassWord(updatedForm.password, updatedForm.confirmPassword)
-        );
+      const validationResult = validateForm(formType, name, updatedForm);
 
-        Object.entries(passwordStatus).forEach(([condition, isMet]) => {
-          if (isMet === false) {
-            setValidError({ password: condition });
-          }
-        });
+      if (validationResult) {
+        if (!isEmpty(validationResult.updatedPasswordStatus)) {
+          setPasswordStatus(validationResult.updatedPasswordStatus);
+        }
 
-        if (updatedForm.email) {
-          if (!checkEmail(updatedForm.email)) {
-            setValidError({
-              email: "Email must be in correct the format: example@org.com",
-            });
-          }
+        if (validationResult.validationErrors) {
+          setValidError(validationResult.validationErrors);
         }
       }
 
       return updatedForm;
     });
-
-    setSubError(null);
-    setValidError(null);
   };
 
   const createList = (
-    listItems: (keyof PasswordCheckTypes)[],
+    listItems: (keyof PasswordStatusTypes)[],
     Icon: React.ElementType,
-    passwordChecks: PasswordCheckTypes
+    passwordChecks: PasswordStatusTypes
   ) => {
     return listItems.map((item) => {
       const isChecked = passwordChecks[item];
@@ -172,7 +161,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     "One special character",
     "8 characters minimum",
     "Passwords must match",
-  ] as (keyof PasswordCheckTypes)[];
+  ] as (keyof PasswordStatusTypes)[];
 
   return (
     <Box
@@ -278,7 +267,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           type="submit"
           variant="contained"
           color="secondary"
-          disabled={!!validError}
+          disabled={hasValue(validError)}
         >
           {formType === "signup" ? "Sign Up" : "Log In"}
         </Button>
