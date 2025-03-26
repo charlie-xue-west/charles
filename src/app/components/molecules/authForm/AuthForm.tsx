@@ -138,7 +138,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     return listItems.map((item) => {
       const isChecked = passwordChecks[item];
       return (
-        <ListItem key={item}>
+        <ListItem key={item} sx={{ paddingLeft: 0, paddingRight: 0 }}>
           <ListItemIcon>
             <Icon color={isChecked ? "success" : "disabled"} />
           </ListItemIcon>
@@ -227,7 +227,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
                 error={!!validError?.password || !!subError?.password}
                 onChange={handleOnChange}
               />
-              <List sx={{ color: "black" }} dense={true}>
+
+              <List sx={{ color: "black" }} className="w-full" dense={true}>
                 {createList(passwordConditions, CheckCircle, passwordChecks)}
               </List>
             </>
