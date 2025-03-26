@@ -5,7 +5,8 @@ export const checkPassWord = (password: string, confirmPassword: string) => {
     "One number": /\d/.test(password),
     "One special character": /[!@#$%^&*(),.?":{}|<>]/.test(password),
     "8 characters minimum": password.length >= 8,
-    "Passwords must match": password === confirmPassword,
+    "Passwords must match":
+      password.length && confirmPassword.length && password === confirmPassword,
   };
 };
 
