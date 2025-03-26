@@ -141,6 +141,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
       return updatedForm;
     });
 
+    setSubError(null);
     setValidError(null);
   };
 
