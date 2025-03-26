@@ -123,12 +123,18 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           checkPassWord(updatedForm.password, updatedForm.confirmPassword)
         );
 
+        Object.entries(passwordStatus).forEach(([condition, isMet]) => {
+          if (isMet === false) {
+            setValidError({ password: condition });
+          }
+        });
+
         if (updatedForm.email) {
-          setValidError({
-            email: checkEmail(updatedForm.email)
-              ? ""
-              : "Email must be in correct the format: example@org.com",
-          });
+          if (!checkEmail(updatedForm.email)) {
+            setValidError({
+              email: "Email must be in correct the format: example@org.com",
+            });
+          }
         }
       }
 
@@ -237,7 +243,6 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
                 type="password"
                 color="secondary"
                 label="Confirm Password"
-                helperText={validError?.password}
                 error={!!validError?.password || !!subError?.password}
                 onChange={handleOnChange}
               />
@@ -249,7 +254,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           )}
         </Box>
 
-        {subError?.unknown?.messages && (
+        {subError?.unknown?.messages.length && (
           <Alert tabIndex={-1} severity="error" icon={false}>
             {joinErrors(subError.unknown.messages)}
           </Alert>
@@ -268,7 +273,12 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           </Box>
         )}
 
-        <Button type="submit" variant="contained" color="secondary">
+        <Button
+          type="submit"
+          variant="contained"
+          color="secondary"
+          disabled={!!validError}
+        >
           {formType === "signup" ? "Sign Up" : "Log In"}
         </Button>
       </ThemeProvider>
