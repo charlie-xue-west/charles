@@ -16,11 +16,12 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useState } from "react";
+import { CheckCircle } from "@mui/icons-material";
 
-import { fetchData } from "@lib";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { fetchData } from "@lib";
 import {
   AuthFormProps,
   FormData,
@@ -28,9 +29,7 @@ import {
   SubmissionErrors,
   ValidateErrors,
 } from "./types";
-import { categorizeErrors, joinErrors } from "./utils";
-import { CheckCircle } from "@mui/icons-material";
-import { checkPassWord } from "./utils/checkers";
+import { categorizeErrors, joinErrors, checkPassWord } from "./utils";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -57,6 +56,7 @@ const customTheme = (outerTheme: Theme) =>
   });
 
 export const AuthForm = ({ formType, className }: AuthFormProps) => {
+  const router = useRouter();
   const outerTheme = useTheme();
   const [formData, setFormData] = useState<FormData>({
     userName: "",
@@ -65,14 +65,13 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
   });
   const [subError, setSubError] = useState<SubmissionErrors | null>(null);
   const [validError, setValidError] = useState<ValidateErrors | null>(null);
-  const [passwordChecks, setPasswordChecks] = useState<PasswordCheckTypes>({
+  const [passwordStatus, setPasswordStatus] = useState<PasswordCheckTypes>({
     "One lowercase character": false,
     "One uppercase character": false,
     "One number": false,
     "One special character": false,
     "8 characters minimum": false,
   });
-  const router = useRouter();
 
   const handleOnsubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     // need this since submit defaults to GET
@@ -115,13 +114,9 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
       };
 
       if (formType === "signup") {
-        if (updatedForm.password !== updatedForm.confirmPassword) {
-          setValidError({
-            password: "Passwords must match",
-          });
-        }
-
-        setPasswordChecks(checkPassWord(updatedForm.password));
+        setPasswordStatus(
+          checkPassWord(updatedForm.password, updatedForm.confirmPassword)
+        );
       }
 
       return updatedForm;
@@ -142,19 +137,22 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           <ListItemIcon>
             <Icon color={isChecked ? "success" : "disabled"} />
           </ListItemIcon>
-          <ListItemText>{item}</ListItemText>
+          <ListItemText sx={{ color: isChecked ? "#2e7d32" : "black" }}>
+            {item}
+          </ListItemText>
         </ListItem>
       );
     });
   };
 
   const passwordConditions = [
-    "One lowercase character" as const,
-    "One uppercase character" as const,
-    "One number" as const,
-    "One special character" as const,
-    "8 characters minimum" as const,
-  ];
+    "One lowercase character",
+    "One uppercase character",
+    "One number",
+    "One special character",
+    "8 characters minimum",
+    "Passwords must match",
+  ] as (keyof PasswordCheckTypes)[];
 
   return (
     <Box
@@ -229,7 +227,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
               />
 
               <List sx={{ color: "black" }} className="w-full" dense={true}>
-                {createList(passwordConditions, CheckCircle, passwordChecks)}
+                {createList(passwordConditions, CheckCircle, passwordStatus)}
               </List>
             </>
           )}
