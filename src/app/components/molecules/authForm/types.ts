@@ -12,7 +12,7 @@ export type FormData = {
 };
 
 export type SubErrorContent = {
-  messages?: string[];
+  messages: string[];
 };
 
 export type SubmissionErrors = {
