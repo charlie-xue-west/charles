@@ -1,4 +1,4 @@
-import { SubmissionErrors } from "../types";
+import { SubmissionErrors } from "../../types";
 
 export const categorizeErrors = (errors: string[] | string) => {
   if (!Array.isArray(errors)) {
