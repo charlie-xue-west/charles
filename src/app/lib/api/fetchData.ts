@@ -32,7 +32,7 @@ export const fetchData = async (
       if (error.response) {
         return {
           error: error.response.status,
-          message: error.response.data || "A server error has occurred",
+          message: error.response.data.message || "A server error has occurred",
         };
       }
     }
