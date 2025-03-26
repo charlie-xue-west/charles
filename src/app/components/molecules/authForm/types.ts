@@ -1,12 +1,14 @@
+export type FormTypes = "signup" | "login";
+
 export type AuthFormProps = {
-  formType: "signup" | "login";
+  formType: FormTypes;
   className?: string;
 };
 
 export type FormData = {
   userName: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
   email?: string;
   dateOfBirth?: string;
 };
@@ -30,7 +32,7 @@ export type ValidateErrors = {
   dob?: string;
 };
 
-export type PasswordCheckTypes = {
+export type PasswordStatusTypes = {
   "One lowercase character": boolean;
   "One uppercase character": boolean;
   "One number": boolean;
