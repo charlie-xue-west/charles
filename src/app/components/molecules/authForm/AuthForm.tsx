@@ -124,6 +124,12 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
         [name]: value,
       };
 
+      if (updatedForm.dateOfBirth) {
+        const date = new Date(updatedForm.dateOfBirth).toISOString();
+
+        updatedForm.dateOfBirth = date;
+      }
+
       const {
         updatedValidationErrors,
         updatedPasswordStatus,
