@@ -15,7 +15,7 @@ export const categorizeErrors = (errors: string[] | string) => {
     "Password must contain uppercase, lowercase, number, and special character.":
       "password",
     "Invalid email format.": "email",
-    "Invalid date format.": "dob",
+    "Invalid date format.": "dateOfBirth",
   };
 
   for (const error of errors) {

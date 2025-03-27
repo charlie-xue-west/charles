@@ -21,7 +21,7 @@ export type SubmissionErrors = {
   userName?: SubErrorContent;
   email?: SubErrorContent;
   password?: SubErrorContent;
-  dob?: SubErrorContent;
+  dateOfBirth?: SubErrorContent;
   unknown?: SubErrorContent;
 };
 
@@ -29,7 +29,7 @@ export type ValidateErrors = {
   userName?: string;
   email?: string;
   password?: string;
-  dob?: string;
+  dateOfBirth?: string;
 };
 
 export type PasswordStatusTypes = {
