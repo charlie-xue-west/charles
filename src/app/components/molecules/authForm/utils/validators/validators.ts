@@ -3,6 +3,7 @@ import {
   FormData,
   ValidateErrors,
   PasswordStatusTypes,
+  SubmissionErrors,
 } from "../../types";
 
 export const checkPassWord = (password: string, confirmPassword: string) => {
@@ -28,39 +29,41 @@ export const checkEmail = (email: string) => {
 export const validateForm = (
   formType: FormTypes,
   target: string,
-  currentForm: FormData
+  currentForm: FormData,
+  currentValidError: ValidateErrors,
+  currentPasswordStatus: PasswordStatusTypes,
+  currentSubError: SubmissionErrors
 ) => {
-  if (formType === "signup") {
-    const result = {
-      validationErrors: {} as ValidateErrors,
-      updatedPasswordStatus: {} as PasswordStatusTypes,
-    };
+  const updatedValidationErrors = currentValidError;
+  let updatedPasswordStatus = currentPasswordStatus;
+  const updatedSubErrors = currentSubError;
 
+  if (formType === "signup") {
     if (target === "password" || target === "confirmPassword") {
       // for condition checklist
-      const updatedPasswordStatus = checkPassWord(
+      const passwordStatus = checkPassWord(
         currentForm.password,
         currentForm.confirmPassword || ""
       );
 
-      result.updatedPasswordStatus = updatedPasswordStatus;
+      updatedPasswordStatus = passwordStatus;
 
       Object.values(updatedPasswordStatus).some((isConditionMet) => {
         if (isConditionMet === false) {
-          result.validationErrors.password = "Not all password conditions met.";
+          updatedValidationErrors.password = "Not all password conditions met.";
         }
       });
     }
 
     if (target === "email" && currentForm.email) {
       if (!checkEmail(currentForm.email)) {
-        result.validationErrors.email =
+        updatedValidationErrors.email =
           "Email must be in correct the format: example@org.com";
       }
     }
-
-    return result;
   }
+
+  return { updatedValidationErrors, updatedPasswordStatus, updatedSubErrors };
 };
 
 export const hasValue = (obj: Record<string, unknown>) =>

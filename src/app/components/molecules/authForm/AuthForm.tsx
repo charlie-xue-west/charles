@@ -29,13 +29,7 @@ import {
   SubmissionErrors,
   ValidateErrors,
 } from "./types";
-import {
-  categorizeErrors,
-  joinErrors,
-  validateForm,
-  hasValue,
-  isEmpty,
-} from "./utils";
+import { categorizeErrors, joinErrors, validateForm, hasValue } from "./utils";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -68,14 +62,26 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     userName: "",
     password: "",
   });
-  const [subError, setSubError] = useState<SubmissionErrors | null>(null);
-  const [validError, setValidError] = useState<ValidateErrors>({});
+  const [subError, setSubError] = useState<SubmissionErrors>({
+    userName: [],
+    email: [],
+    password: [],
+    dateOfBirth: [],
+    unknown: [],
+  });
+  const [validError, setValidError] = useState<ValidateErrors>({
+    userName: "",
+    email: "",
+    password: "",
+    dateOfBirth: "",
+  });
   const [passwordStatus, setPasswordStatus] = useState<PasswordStatusTypes>({
     "One lowercase character": false,
     "One uppercase character": false,
     "One number": false,
     "One special character": false,
     "8 characters minimum": false,
+    "Passwords must match": false,
   });
 
   const handleOnsubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -118,17 +124,22 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
         [name]: value,
       };
 
-      const validationResult = validateForm(formType, name, updatedForm);
+      const {
+        updatedValidationErrors,
+        updatedPasswordStatus,
+        updatedSubErrors,
+      } = validateForm(
+        formType,
+        name,
+        updatedForm,
+        validError,
+        passwordStatus,
+        subError
+      );
 
-      if (validationResult) {
-        if (!isEmpty(validationResult.updatedPasswordStatus)) {
-          setPasswordStatus(validationResult.updatedPasswordStatus);
-        }
-
-        if (validationResult.validationErrors) {
-          setValidError(validationResult.validationErrors);
-        }
-      }
+      setPasswordStatus(updatedPasswordStatus);
+      setValidError(updatedValidationErrors);
+      setSubError(updatedSubErrors);
 
       return updatedForm;
     });
@@ -155,13 +166,13 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
   };
 
   const passwordConditions = [
-    "One lowercase character",
-    "One uppercase character",
-    "One number",
-    "One special character",
-    "8 characters minimum",
-    "Passwords must match",
-  ] as (keyof PasswordStatusTypes)[];
+    "One lowercase character" as const,
+    "One uppercase character" as const,
+    "One number" as const,
+    "One special character" as const,
+    "8 characters minimum" as const,
+    "Passwords must match" as const,
+  ];
 
   return (
     <Box
@@ -182,8 +193,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             name="userName"
             color="secondary"
             label="User Name"
-            error={!!subError?.userName}
-            helperText={subError?.userName?.messages}
+            error={!!subError.userName.length}
+            helperText={joinErrors(subError.userName)}
             onChange={handleOnChange}
           />
           {formType === "signup" && (
@@ -195,8 +206,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
                 name="email"
                 color="secondary"
                 label="Email"
-                error={!!validError?.email || !!subError?.email}
-                helperText={validError?.email || subError?.email?.messages}
+                error={!!validError.email || !!subError.email.length}
+                helperText={validError.email || joinErrors(subError.email)}
                 onChange={handleOnChange}
               />
 
@@ -205,8 +216,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
                 className="w-full"
                 name="dateOfBirth"
                 color="secondary"
-                helperText={subError?.dob?.messages}
-                error={!!subError?.dob}
+                helperText={joinErrors(subError.dateOfBirth)}
+                error={!!subError.dateOfBirth.length}
                 onChange={handleOnChange}
               />
             </>
@@ -219,8 +230,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
             name="password"
             color="secondary"
             label="Password"
-            error={!!validError?.password || !!subError?.password}
-            helperText={joinErrors(subError?.password?.messages || [])}
+            error={!!validError.password || !!subError.password.length}
+            helperText={joinErrors(subError.password)}
             onChange={handleOnChange}
           />
 
@@ -233,7 +244,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
                 type="password"
                 color="secondary"
                 label="Confirm Password"
-                error={!!validError?.password || !!subError?.password}
+                error={!!validError.password || !!subError.password.length}
                 onChange={handleOnChange}
               />
 
@@ -244,9 +255,9 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           )}
         </Box>
 
-        {subError?.unknown?.messages.length && (
+        {subError.unknown.length && (
           <Alert tabIndex={-1} severity="error" icon={false}>
-            {joinErrors(subError.unknown.messages)}
+            {joinErrors(subError.unknown)}
           </Alert>
         )}
 
