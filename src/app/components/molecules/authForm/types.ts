@@ -18,18 +18,18 @@ export type SubErrorContent = {
 };
 
 export type SubmissionErrors = {
-  userName?: SubErrorContent;
-  email?: SubErrorContent;
-  password?: SubErrorContent;
-  dateOfBirth?: SubErrorContent;
-  unknown?: SubErrorContent;
+  userName: string[];
+  email: string[];
+  password: string[];
+  dateOfBirth: string[];
+  unknown: string[];
 };
 
 export type ValidateErrors = {
-  userName?: string;
-  email?: string;
-  password?: string;
-  dateOfBirth?: string;
+  userName: string;
+  email: string;
+  password: string;
+  dateOfBirth: string;
 };
 
 export type PasswordStatusTypes = {
@@ -38,4 +38,5 @@ export type PasswordStatusTypes = {
   "One number": boolean;
   "One special character": boolean;
   "8 characters minimum": boolean;
+  "Passwords must match": boolean;
 };
