@@ -1,3 +1,4 @@
+import { isAfter, parseISO } from "date-fns";
 import {
   FormTypes,
   FormData,
@@ -26,6 +27,13 @@ export const checkEmail = (email: string) => {
   return strictEmailRegex.test(email);
 };
 
+export const checkDate = (date: string) => {
+  const today = new Date();
+  const inputDate = parseISO(date);
+
+  return !isAfter(inputDate, today);
+};
+
 export const validateForm = (
   formType: FormTypes,
   target: string,
@@ -39,7 +47,11 @@ export const validateForm = (
   const updatedSubErrors = currentSubError;
 
   if (formType === "signup") {
-    if (target === "password" || target === "confirmPassword") {
+    if (target === "email" && currentForm.email) {
+      updatedValidationErrors.email = checkEmail(currentForm.email)
+        ? ""
+        : "Email must be in correct the format: example@org.com";
+    } else if (target === "password" || target === "confirmPassword") {
       // for condition checklist
       const passwordStatus = checkPassWord(
         currentForm.password,
@@ -49,19 +61,18 @@ export const validateForm = (
       updatedPasswordStatus = passwordStatus;
 
       Object.values(updatedPasswordStatus).some((isConditionMet) => {
-        if (isConditionMet === false) {
-          updatedValidationErrors.password = "Not all password conditions met.";
-        }
+        updatedValidationErrors.password = isConditionMet
+          ? ""
+          : "Not all password conditions met.";
       });
-    }
-
-    if (target === "email" && currentForm.email) {
-      if (!checkEmail(currentForm.email)) {
-        updatedValidationErrors.email =
-          "Email must be in correct the format: example@org.com";
-      }
+    } else if (target === "dateOfBirth" && currentForm.dateOfBirth) {
+      updatedValidationErrors.dateOfBirth = checkDate(currentForm.dateOfBirth)
+        ? ""
+        : "Date of birth cannot be after today.";
     }
   }
+
+  updatedSubErrors.unknown = [];
 
   return { updatedValidationErrors, updatedPasswordStatus, updatedSubErrors };
 };

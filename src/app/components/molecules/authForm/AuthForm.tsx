@@ -216,8 +216,12 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
                 className="w-full"
                 name="dateOfBirth"
                 color="secondary"
-                helperText={joinErrors(subError.dateOfBirth)}
-                error={!!subError.dateOfBirth.length}
+                helperText={
+                  validError.dateOfBirth || joinErrors(subError.dateOfBirth)
+                }
+                error={
+                  !!validError.dateOfBirth || !!subError.dateOfBirth.length
+                }
                 onChange={handleOnChange}
               />
             </>
