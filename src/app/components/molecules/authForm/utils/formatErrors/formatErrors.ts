@@ -5,7 +5,13 @@ export const categorizeErrors = (errors: string[] | string) => {
     errors = [errors];
   }
 
-  const formErrors: SubmissionErrors = {};
+  const formErrors: SubmissionErrors = {
+    userName: [],
+    email: [],
+    password: [],
+    dateOfBirth: [],
+    unknown: [],
+  };
 
   const errorMap: Record<string, keyof SubmissionErrors> = {
     "Duplicate User Name.": "userName",
@@ -23,11 +29,11 @@ export const categorizeErrors = (errors: string[] | string) => {
     const errorType = errorMap[error] ? errorMap[error] : "unknown";
 
     if (!formErrors[errorType]) {
-      formErrors[errorType] = { messages: [] };
+      formErrors[errorType] = [];
     }
 
-    formErrors[errorType].messages = formErrors[errorType].messages
-      ? [...formErrors[errorType].messages, error]
+    formErrors[errorType] = formErrors[errorType]
+      ? [...formErrors[errorType], error]
       : [error];
   }
 
