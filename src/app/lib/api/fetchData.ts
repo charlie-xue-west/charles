@@ -9,16 +9,18 @@ type ResponseData = {
 export const fetchData = async (
   url: string,
   method: Method,
-  headers?: RawAxiosRequestHeaders,
+  withCredentials: boolean,
+  headers: RawAxiosRequestHeaders = {
+    "Content-Type": "application/json",
+  },
   body?: object
 ) => {
   try {
     const response = await axios({
       method,
       url,
-      headers: headers || {
-        "Content-Type": "application/json",
-      },
+      withCredentials,
+      headers,
       ...(body && { data: body }),
     });
 
