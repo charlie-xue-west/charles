@@ -100,6 +100,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     const response = await fetchData(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/${formType}`,
       "POST",
+      false,
       undefined,
       userData
     );
@@ -265,7 +266,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           )}
         </Box>
 
-        {subError.unknown.length && (
+        {subError.unknown.length > 1 && (
           <Alert tabIndex={-1} severity="error" icon={false}>
             {joinErrors(subError.unknown)}
           </Alert>
