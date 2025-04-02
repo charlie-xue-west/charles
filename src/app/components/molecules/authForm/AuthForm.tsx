@@ -100,7 +100,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     const response = await fetchData(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/${formType}`,
       "POST",
-      false,
+      true,
       undefined,
       userData
     );
