@@ -3,7 +3,7 @@ import { authSlice } from "./slices";
 
 export const makeStore = () => {
   return configureStore({
-    reducer: { auth: authSlice },
+    reducer: { auth: authSlice.reducer },
   });
 };
 
