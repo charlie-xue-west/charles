@@ -1,3 +1,5 @@
+import { User } from "@lib";
+
 export type FormTypes = "signup" | "login";
 
 export type AuthFormProps = {
@@ -39,4 +41,11 @@ export type PasswordStatusTypes = {
   "One special character": boolean;
   "8 characters minimum": boolean;
   "Passwords must match": boolean;
+};
+
+export type AuthResponseData = {
+  message?: string;
+  error?: string;
+  statusCode?: number;
+  user?: User;
 };

@@ -1,11 +1,5 @@
 import axios, { Method, RawAxiosRequestHeaders } from "axios";
 
-type ResponseData = {
-  message?: string;
-  error?: string;
-  statusCode?: number;
-};
-
 export const fetchData = async (
   url: string,
   method: Method,
@@ -24,7 +18,7 @@ export const fetchData = async (
       ...(body && { data: body }),
     });
 
-    return response.data as ResponseData;
+    return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       if (error.code === "ERR_NETWORK" || error.message === "Network Error") {

@@ -17,19 +17,22 @@ import {
   useTheme,
 } from "@mui/material";
 import { CheckCircle } from "@mui/icons-material";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { fetchData } from "@lib";
+import { fetchData } from "@lib/api";
+import { AppDispatch, login } from "@lib/redux";
+
 import {
   AuthFormProps,
+  AuthResponseData,
   FormData,
   PasswordStatusTypes,
   SubmissionErrors,
   ValidateErrors,
 } from "./types";
 import { categorizeErrors, joinErrors, validateForm, hasValue } from "./utils";
+import { useDispatch } from "react-redux";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -56,6 +59,7 @@ const customTheme = (outerTheme: Theme) =>
   });
 
 export const AuthForm = ({ formType, className }: AuthFormProps) => {
+  const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const outerTheme = useTheme();
   const [formData, setFormData] = useState<FormData>({
@@ -97,21 +101,22 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
       ...(dateOfBirth && { dateOfBirth }),
     };
 
-    const response = await fetchData(
+    const response = (await fetchData(
       `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth/${formType}`,
       "POST",
       true,
       undefined,
       userData
-    );
+    )) as AuthResponseData;
 
-    if (response.error) {
+    if (response.error && response.message) {
       const categorizedErrors = categorizeErrors(response.message);
 
       setSubError(categorizedErrors);
     }
 
-    if (!response.error) {
+    if (!response.error && response.user) {
+      dispatch(login({ user: response.user }));
       router.push("/hub");
     }
   };
