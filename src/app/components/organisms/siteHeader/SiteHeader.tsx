@@ -1,11 +1,18 @@
+"use client";
+
 import { HomeButton, LogInButton } from "@components";
+import { AppRedux } from "@lib/redux";
 import { AppBar } from "@mui/material";
+import { useSelector } from "react-redux";
 
 export const SiteHeader = () => {
   // using because MUI style take precedent over tailwind
   const appBarStyle = {
     flexDirection: "row",
   };
+
+  const authState = useSelector((state: AppRedux) => state.auth);
+  const isAuthenticated = authState.isAuthenticated;
 
   return (
     <AppBar
@@ -15,7 +22,7 @@ export const SiteHeader = () => {
       className="flex justify-between p-[8px] absolute"
     >
       <HomeButton />
-      <LogInButton />
+      {isAuthenticated && <LogInButton />}
     </AppBar>
   );
 };
