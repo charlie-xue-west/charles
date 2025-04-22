@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Box } from "@mui/material";
 import "./globals.css";
 import { SiteHeader, StoreProvider } from "@components";
+import { useEffect } from "react";
+import { login, loginError, logout, setUser } from "@lib/redux";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +26,26 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch("/api/getUserInfo");
+
+        if (response.ok) {
+          const user = await response.json();
+          dispatch(setUser(user));
+          dispatch(login());
+        } else {
+          dispatch(logout());
+        }
+      } catch (error: unknown) {
+        dispatch(loginError(error));
+      }
+    };
+
+    fetchUserInfo();
+  }, [dispatch]);
+
   const backgroundStyle = {
     backgroundImage: "url('./sunset.jpg')",
     backgroundSize: "cover",
@@ -42,4 +64,7 @@ export default function RootLayout({
       </html>
     </StoreProvider>
   );
+}
+function dispatch(arg0: any) {
+  throw new Error("Function not implemented.");
 }

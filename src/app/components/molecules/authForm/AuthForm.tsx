@@ -21,7 +21,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { fetchData } from "@lib/api";
-import { AppDispatch, login } from "@lib/redux";
 
 import {
   AuthFormProps,
@@ -32,7 +31,6 @@ import {
   ValidateErrors,
 } from "./types";
 import { categorizeErrors, joinErrors, validateForm, hasValue } from "./utils";
-import { useDispatch } from "react-redux";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -59,7 +57,7 @@ const customTheme = (outerTheme: Theme) =>
   });
 
 export const AuthForm = ({ formType, className }: AuthFormProps) => {
-  const dispatch = useDispatch<AppDispatch>();
+  // const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
   const outerTheme = useTheme();
   const [formData, setFormData] = useState<FormData>({
@@ -116,7 +114,6 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     }
 
     if (!response.error && response.user) {
-      dispatch(login({ user: response.user }));
       router.push("/hub");
     }
   };
