@@ -271,7 +271,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
           )}
         </Box>
 
-        {subError.unknown.length > 1 && (
+        {subError.unknown.length > 0 && (
           <Alert tabIndex={-1} severity="error" icon={false}>
             {joinErrors(subError.unknown)}
           </Alert>
