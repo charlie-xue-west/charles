@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const fetchUserInfo = async () => {
-  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/user`;
+  const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/me`;
 
   try {
     const response = await axios({
