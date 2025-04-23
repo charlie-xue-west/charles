@@ -17,21 +17,26 @@ export const fetchUserInfo = async () => {
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       if (error.code === "ERR_NETWORK" || error.message === "Network Error") {
-        return { error: "ERR_NETWORK", message: error.message };
+        return { error: { status: "ERR_NETWORK", message: error.message } };
       }
 
       if (error.response) {
         return {
-          error: error.response.status,
-          message: error.response.data.message || "A server error has occurred",
+          error: {
+            status: error.response.status,
+            message:
+              error.response.data.message || "A server error has occurred",
+          },
         };
       }
     }
 
     if (error instanceof Error) {
-      return { error: "Unknown Error", message: error.message };
+      return { error: { status: "unknown", message: error.message } };
     }
 
-    return { error: "Unknown Error", message: "An unexpected error occurred." };
+    return {
+      error: { status: "unknown", message: "An unexpected error occurred." },
+    };
   }
 };
