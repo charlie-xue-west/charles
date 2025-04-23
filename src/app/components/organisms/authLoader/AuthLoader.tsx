@@ -1,3 +1,5 @@
+"use client";
+
 import { fetchUserInfo } from "@lib/api";
 import { login, loginError, logout, setUser } from "@lib/redux";
 import { useEffect } from "react";
@@ -11,9 +13,8 @@ export const AuthLoader = () => {
       try {
         const response = await fetchUserInfo();
 
-        if (response.ok) {
-          const user = await response.json();
-          dispatch(setUser(user));
+        if (response.status === "success") {
+          dispatch(setUser(response.data.user));
           dispatch(login());
         } else {
           dispatch(logout());
