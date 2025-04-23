@@ -113,7 +113,7 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
       setSubError(categorizedErrors);
     }
 
-    if (!response.error && response.user) {
+    if (!response.error && response.data?.user) {
       router.push("/hub");
     }
   };
