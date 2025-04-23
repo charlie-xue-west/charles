@@ -47,5 +47,5 @@ export type AuthResponseData = {
   message?: string;
   error?: string;
   statusCode?: number;
-  user?: User;
+  data?: { user: User };
 };
