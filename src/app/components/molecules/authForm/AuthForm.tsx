@@ -31,6 +31,8 @@ import {
   ValidateErrors,
 } from "./types";
 import { categorizeErrors, joinErrors, validateForm, hasValue } from "./utils";
+import { useDispatch } from "react-redux";
+import { login, setUser } from "@lib";
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -57,7 +59,7 @@ const customTheme = (outerTheme: Theme) =>
   });
 
 export const AuthForm = ({ formType, className }: AuthFormProps) => {
-  // const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch();
   const router = useRouter();
   const outerTheme = useTheme();
   const [formData, setFormData] = useState<FormData>({
@@ -114,6 +116,8 @@ export const AuthForm = ({ formType, className }: AuthFormProps) => {
     }
 
     if (!response.error && response.data?.user) {
+      dispatch(setUser(response.data.user));
+      dispatch(login());
       router.push("/hub");
     }
   };
