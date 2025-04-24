@@ -1,1 +1,0 @@
-export * from "./authForm/AuthForm";
