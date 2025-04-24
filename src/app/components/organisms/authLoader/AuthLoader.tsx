@@ -10,22 +10,20 @@ export const AuthLoader = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      try {
-        const response = await fetchUserInfo();
+      const response = await fetchUserInfo();
 
-        if (response.status === "success") {
-          dispatch(setUser(response.data.user));
-          dispatch(login());
-        } else {
-          dispatch(logout());
-        }
-      } catch (error: unknown) {
-        dispatch(loginError(error));
+      if (response.status === "success") {
+        dispatch(setUser(response.data.user));
+        dispatch(login());
+      } else {
+        dispatch(logout());
       }
+
+      if (response.error) dispatch(loginError(response.error.message));
     };
 
     getUserInfo();
   }, [dispatch]);
 
-  return null; // Nothing to render, just effects
+  return null;
 };
