@@ -1,6 +1,6 @@
 "use client";
 
-import { fetchUserInfo } from "../../../../api";
+import { fetchUserInfo } from "@api";
 import { login, loginError, logout, setUser } from "@lib/redux";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
