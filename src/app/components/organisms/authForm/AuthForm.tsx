@@ -20,7 +20,7 @@ import { CheckCircle } from "@mui/icons-material";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { fetchData } from "@lib/api";
+import { fetchData } from "../../../../api";
 
 import {
   AuthFormProps,

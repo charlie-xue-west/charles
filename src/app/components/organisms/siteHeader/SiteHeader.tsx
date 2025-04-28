@@ -1,7 +1,7 @@
 "use client";
 
 import { HomeButton, LogInButton } from "@components";
-import { sendLogoutRequest } from "@lib";
+import { sendLogoutRequest } from "@api";
 import { AppRedux, logout } from "@lib/redux";
 import {
   AppBar,
