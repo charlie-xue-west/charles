@@ -1,3 +1,3 @@
 export * from "./fetchData";
-export * from "./fetchUserInfo";
+export * from "./user";
 export * from "./auth";
