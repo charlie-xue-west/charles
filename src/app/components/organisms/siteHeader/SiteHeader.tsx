@@ -28,7 +28,7 @@ export const SiteHeader = () => {
   const handLogout = async () => {
     const response = await sendLogoutRequest();
 
-    if (response.status === "success") {
+    if (response.success) {
       dispatch(logout());
     }
     //todo: add error handling
