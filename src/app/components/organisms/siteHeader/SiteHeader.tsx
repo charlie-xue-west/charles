@@ -1,7 +1,8 @@
 "use client";
 
 import { HomeButton, LogInButton } from "@components";
-import { AppRedux } from "@lib/redux";
+import { sendLogoutRequest } from "@lib";
+import { AppRedux, logout } from "@lib/redux";
 import {
   AppBar,
   Avatar,
@@ -14,36 +15,39 @@ import {
 } from "@mui/material";
 import Link from "next/link";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export const SiteHeader = () => {
+  const dispatch = useDispatch();
+
   // using because MUI style take precedent over tailwind
   const appBarStyle = {
     flexDirection: "row",
+  };
+
+  const handLogout = async () => {
+    const response = await sendLogoutRequest();
+
+    if (response.status === "success") {
+      dispatch(logout());
+    }
+    //todo: add error handling
   };
   const settings = [
     { name: "Profile", url: "/profile" },
     { name: "Hub", url: "/hub" },
     { name: "Settings", url: "/settings" },
-    { name: "Logout", url: "/logout" },
+    { name: "Logout", url: "/", handler: handLogout },
   ];
 
   const authState = useSelector((state: AppRedux) => state.auth);
   const isAuthenticated = authState.isAuthenticated;
 
-  // const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
-  // const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-  //   setAnchorElNav(event.currentTarget);
-  // };
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
   };
-
-  // const handleCloseNavMenu = () => {
-  //   setAnchorElNav(null);
-  // };
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
@@ -84,7 +88,7 @@ export const SiteHeader = () => {
           >
             {settings.map((setting) => (
               <MenuItem key={setting.name} onClick={handleCloseUserMenu}>
-                <Link href={setting.url}>
+                <Link href={setting.url} onClick={setting.handler}>
                   <Typography sx={{ textAlign: "center" }}>
                     {setting.name}
                   </Typography>
